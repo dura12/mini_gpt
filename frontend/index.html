@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiny GPT</title>
+<style>
+  :root { --bg:#f6f5f1; --card:#fff; --ink:#1d1d1b; --muted:#6b6a64; --line:#dcdad2; --accent:#2f5d50; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161715; --card:#20211f; --ink:#ecebe5; --muted:#9b9a92; --line:#3a3b37; --accent:#7fc4ae; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:32px 16px 64px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; }
+  label { display:block; font-size:.85rem; color:var(--muted); margin:0 0 4px; }
+  textarea { width:100%; min-height:110px; resize:vertical; padding:10px; font:inherit; color:var(--ink);
+             background:var(--bg); border:1px solid var(--line); border-radius:8px; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; margin:14px 0; }
+  .row > div { flex:1 1 140px; }
+  input[type=number] { width:100%; padding:8px; font:inherit; color:var(--ink); background:var(--bg);
+                       border:1px solid var(--line); border-radius:8px; }
+  button { padding:10px 20px; font:inherit; font-weight:600; color:#fff; background:var(--accent); border:0;
+           border-radius:8px; cursor:pointer; }
+  button:disabled { opacity:.55; cursor:wait; }
+  #status { margin-left:12px; color:var(--muted); font-size:.9rem; }
+  #out { white-space:pre-wrap; margin-top:20px; padding:14px; min-height:60px; background:var(--bg);
+         border:1px solid var(--line); border-radius:8px; }
+  #out .prompt { color:var(--muted); }
+  #out.err { color:#b3261e; }
+  small { color:var(--muted); display:block; margin-top:16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tiny GPT</h1>
+  <p class="sub">A small decoder-only Transformer trained from scratch. Expect word-level English, not intelligence.</p>
+  <div class="card">
+    <label for="prompt">Prompt</label>
+    <textarea id="prompt">The history of</textarea>
+    <div class="row">
+      <div><label for="n">New tokens</label><input id="n" type="number" min="1" max="300" value="60"></div>
+      <div><label for="t">Temperature (0 = greedy)</label><input id="t" type="number" min="0" max="2" step="0.1" value="0"></div>
+      <div><label for="k">Top-k (optional)</label><input id="k" type="number" min="1" placeholder="off"></div>
+    </div>
+    <button id="go">Generate</button><span id="status"></span>
+    <div id="out" aria-live="polite"></div>
+    <small id="info"></small>
+  </div>
+</main>
+<script>
+  const API = location.protocol.startsWith("http") ? "" : "http://127.0.0.1:8000";
+  const $ = id => document.getElementById(id);
+
+  fetch(API + "/health").then(r => r.json()).then(h => {
+    $("info").textContent = `Model: ${h.n_layer} block(s), ${h.n_head} heads, embedding ${h.n_embd}, context ${h.context_length} tokens.`;
+  }).catch(() => { $("info").textContent = "Backend not reachable. Start it with: uvicorn server.main:app --port 8000"; });
+
+  $("go").addEventListener("click", async () => {
+    const out = $("out"), btn = $("go");
+    const body = { prompt: $("prompt").value, max_new_tokens: +$("n").value || 60, temperature: +$("t").value || 0 };
+    if ($("k").value) body.top_k = +$("k").value;
+    btn.disabled = true; $("status").textContent = "generating..."; out.className = "";
+    try {
+      const r = await fetch(API + "/generate", { method: "POST", headers: { "Content-Type": "application/json" },
+                                                  body: JSON.stringify(body) });
+      if (!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
+      const d = await r.json();
+      out.textContent = "";
+      const p = document.createElement("span"); p.className = "prompt"; p.textContent = d.prompt;
+      out.append(p, document.createTextNode(d.generated));
+    } catch (e) {
+      out.className = "err"; out.textContent = "Error: " + e.message;
+    } finally { btn.disabled = false; $("status").textContent = ""; }
+  });
+</script>
+</body>
+</html>

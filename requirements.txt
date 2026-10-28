@@ -1,0 +1,10 @@
+torch>=2.2
+numpy<2
+tiktoken
+datasets
+matplotlib
+fastapi
+uvicorn[standard]>=0.30
+pydantic>=2
+httpx
+pytest
