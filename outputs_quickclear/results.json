@@ -1,0 +1,91 @@
+{
+  "config": {
+    "vocab_size": 50257,
+    "context_length": 64,
+    "n_embd": 64,
+    "n_head": 4,
+    "n_layer": 1,
+    "dropout": 0.0,
+    "tie_weights": true
+  },
+  "hparams": {
+    "steps": 200,
+    "batch_size": 32,
+    "lr": 0.003,
+    "warmup": 100,
+    "eval_interval": 100,
+    "eval_iters": 20,
+    "grad_clip": 1.0,
+    "seed": 1337,
+    "device": "cpu"
+  },
+  "num_parameters": 3270656,
+  "train_tokens": 2391884,
+  "val_tokens": 247289,
+  "seconds": 340.0,
+  "best_step": 200,
+  "best_val_loss": 7.044130873680115,
+  "log": [
+    {
+      "step": 50,
+      "batch_loss": 8.342855453491211
+    },
+    {
+      "step": 100,
+      "batch_loss": 7.517754554748535
+    },
+    {
+      "step": 150,
+      "batch_loss": 7.288750171661377
+    },
+    {
+      "step": 200,
+      "batch_loss": 7.0271430015563965
+    }
+  ],
+  "evals": [
+    {
+      "step": 0,
+      "train_loss": 10.82800488471985,
+      "val_loss": 10.827539253234864
+    },
+    {
+      "step": 100,
+      "train_loss": 7.393289470672608,
+      "val_loss": 7.446151494979858
+    },
+    {
+      "step": 200,
+      "train_loss": 6.963539695739746,
+      "val_loss": 7.044130873680115
+    }
+  ],
+  "samples_before": [
+    {
+      "prompt": "The history of",
+      "text": "The history of Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro Impro"
+    },
+    {
+      "prompt": "In 1990 , the",
+      "text": "In 1990 , theBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattleBattle Double Double Double"
+    },
+    {
+      "prompt": "The city is located",
+      "text": "The city is located Grass Grass neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood neighbourhood"
+    }
+  ],
+  "samples_after": [
+    {
+      "prompt": "The history of",
+      "text": "The history of the the the the the the the the the the the the the the \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+    },
+    {
+      "prompt": "In 1990 , the",
+      "text": "In 1990 , the the the the the \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n = = = = = = = = = = = = ="
+    },
+    {
+      "prompt": "The city is located",
+      "text": "The city is located , the the the the the the the the the the the the the the the the the \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+    }
+  ]
+}
